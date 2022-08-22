@@ -1,56 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useState } from 'react';
+import calculate from './app/calc.js';
+import Button from './components/Button/Button';
 
 function App() {
+
+  const Buttons = [
+    '1', '2', '3', 'C',
+    '4', '5', '6', '+',
+    '7', '8', '9', '-',
+    '/', '0', '*', '=',
+    '(', ')',
+  ]
+
+  const [inputState, setInputState] = useState('');
+  const [resultState, setResultState] = useState('');
+
+  const btnOnClick = (number: string) => {
+    if (number === 'C')
+      return () => setInputState('');
+    if (number === '=')
+      return () => {
+        calculate(inputState, setResultState);
+        setInputState('');
+      }
+    return () => setInputState(inputState.concat(number));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+    <div className="container mx-auto px-5">
+      <div className="">
+        <input
+          value={inputState}
+          onChange={e => setInputState(e.target.value)}
+          type="text"
+          className='m-3 border-2 border-yellow-400 rounded-md p-3 flex mx-auto caret-pink-500' />
+        <div className='grid gap-4 grid-cols-4 w-96 mx-auto mb-10'>
+          {Buttons.map((e) => {
+            return (
+              <Button onClick={btnOnClick(e)} key={e}>
+                {e}
+              </Button>
+            )
+          })}
+        </div>
+        <div className='font-mono font-bold text-7xl text-center'>
+          {resultState}
+        </div>
+      </div>
     </div>
   );
 }
